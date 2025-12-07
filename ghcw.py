@@ -4,16 +4,17 @@
 Description: A Github contribution widget for Qtile
 Author: David COBAC
 Date Created: December 6, 2025
-Date Modified: June 10, 2023
+Date Modified: December 7, 2025
 Version: 1.0
 Python Version: 3.13
-Dependencies: libqtile
+Dependencies: aiohttp, libqtile
 License: GNU GPL Version 3
 """
 
+import asyncio
 from datetime import datetime, timedelta
 
-import requests
+import aiohttp
 from libqtile.widget import base
 
 
@@ -27,70 +28,89 @@ class Contrib_day:
     def draw(self, ctx):
         ctx.save()
         ctx.translate(self.x, self.y)
-        ctx.rectangle(0, 0, self.dim-1, self.dim-1)
+        ctx.rectangle(0, 0, self.dim - 1, self.dim - 1)
         ctx.set_source_rgb(*self.couleur)
         ctx.fill()
         ctx.restore()
 
 
 class Ghcw(base._Widget):
-
-    defaults = [("idgithub", "cobacdavid", ""),
-                ("nweeks", 20, ""),
-                ("colors",
-                 [(.1, .1, .1)] + [(0, .2*i, 0) for i in range(1, 6)],
-                 "")]
+    defaults = [
+        ("idgithub", "cobacdavid", ""),
+        ("gap", 1, ""),
+        ("nweeks", 52, ""),
+        ("colors",
+         [(.1, .1, .1)] + [(0, .2*i, 0) for i in range(1, 6)],
+         "")
+    ]
 
     def __init__(self, **config):
         base._Widget.__init__(self, length=0, **config)
         self.add_defaults(self.defaults)
-        self._tab_donnees = self.tab_donnees(self.idgithub, self.nweeks)
+        # tâche asynchrone pour récupérer les données en API
+        self._tab_donnees = None
+        asyncio.create_task(self.async_init())
+
+    async def async_init(self):
+        """Partie asynchrone de l'init."""
+        data = await self.fetch_contribs(self.idgithub, self.nweeks)
+        self._tab_donnees = data
+        # dessinne le widget et met à jour la barre
+        self.draw()
+        self.bar.draw()
+
+    async def fetch_contribs(self, user, nweeks):
+        url = f"https://github-contributions.vercel.app/api/v1/{user}"
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url) as resp:
+                res = await resp.json()
+
+        today = datetime.today()
+
+        i = 0
+        while datetime.fromisoformat(res['contributions'][i]['date']) > today:
+            i += 1
+
+        tab_donnees = []
+        for j in range(i, i + 7 * nweeks):
+            d = res["contributions"][j]
+            tab_donnees.append((d["date"], d["intensity"]))
+
+        # prepend empty days to align week
+        missing = 6 - today.weekday()
+        for k in range(missing):
+            tab_donnees.insert(
+                0,
+                ((today + timedelta(days=k+1)).isoformat()[:10], 0)
+            )
+        return tab_donnees[:7 * nweeks]
 
     def draw(self):
-        # calcul de la dimension des carrés en fonction de la
-        # hauteur de la barre. À faire : laisser l'utilisateur
-        # gérer l'espace entre deuxc carrés
-        self.espace = 1
+        if self._tab_donnees is None:
+            # draw a placeholder until data loads
+            self.drawer.clear(self.background or self.bar.background)
+            self.length = 0
+            # self.draw_text("…", self.drawer)
+            self.draw_at_default_position()
+            return
+
         self.dim = (self.bar.height - 8) // 7
-        lgth = self.nweeks * (self.dim + self.espace) + self.espace
+        lgth = self.nweeks * (self.dim + self.gap) + self.gap
+
         self.drawer.clear(self.background or self.bar.background)
         ctx = self.drawer.ctx
-        # on reste cohérent avec la version originale
         ctx.scale(-1, -1)
         ctx.translate(-lgth, -self.bar.height)
-        #
+
         for col in range(self.nweeks):
             for lig in range(7):
                 intensity = self._tab_donnees[col * 7 + lig][1]
                 couleur = self.colors[min(5, int(intensity))]
-                Contrib_day(self.espace * (col + 1) + col * self.dim,
-                            self.espace * (lig + 1) + lig * self.dim,
-                            self.dim, couleur).draw(ctx)
-                # on réajuste le widget en longueur
+                Contrib_day(
+                    self.gap * (col + 1) + col * self.dim,
+                    self.gap * (lig + 1) + lig * self.dim,
+                    self.dim, couleur
+                ).draw(ctx)
+
         self.length = lgth
         self.draw_at_default_position()
-
-    @staticmethod
-    def tab_donnees(idgithub, nweeks):
-        url = f"https://github-contributions.vercel.app/api/v1/{idgithub}"
-        res = requests.get(url)
-        today = datetime.today()
-        # on attend d'arriver à la date du jour
-        i = 0
-        while (datetime.fromisoformat(res.json()['contributions'][i]['date'])
-               > today):
-            i += 1
-            # on ajoute autant de jours que demandé par nweeks
-        tab_donnees = []
-        for j in range(i, i + 7 * nweeks):
-            dico_jour = res.json()["contributions"][j]
-            date = dico_jour['date']
-            intensity = dico_jour['intensity']
-            tab_donnees.append((date, intensity))
-            # on ajoute les jours suivants de notre semaine
-        a_ajouter = 6 - today.weekday()
-        for i in range(a_ajouter):
-            tab_donnees.insert(0, ((today
-                                    + timedelta(days=i+1)).isoformat()[:10], 0))
-            # on supprime les jours précédents en trop (vu qu'on en a ajoutés)
-        return tab_donnees[:7*nweeks]
