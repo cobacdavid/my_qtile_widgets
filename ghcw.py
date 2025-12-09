@@ -12,6 +12,7 @@ License: GNU GPL Version 3
 """
 
 import asyncio
+import webbrowser
 from datetime import datetime, timedelta
 
 import aiohttp
@@ -50,17 +51,22 @@ class Ghcw(base._Widget):
         # tâche asynchrone pour récupérer les données en API
         self._tab_donnees = None
         asyncio.create_task(self.async_init())
+        self.add_callbacks({"Button1": self.to_user_webpage})
+
+    def to_user_webpage(self):
+        url = f"https://github.com/{self.idgithub}"
+        webbrowser.open(url)
 
     async def async_init(self):
         """Partie asynchrone de l'init."""
-        data = await self.fetch_contribs(self.idgithub, self.nweeks)
+        data = await self.fetch_contribs()
         self._tab_donnees = data
-        # dessinne le widget et met à jour la barre
+        # dessine le widget et met à jour la barre
         self.draw()
         self.bar.draw()
 
-    async def fetch_contribs(self, user, nweeks):
-        url = f"https://github-contributions.vercel.app/api/v1/{user}"
+    async def fetch_contribs(self):
+        url = f"https://github-contributions.vercel.app/api/v1/{self.idgithub}"
         async with aiohttp.ClientSession() as session:
             async with session.get(url) as resp:
                 res = await resp.json()
@@ -72,7 +78,7 @@ class Ghcw(base._Widget):
             i += 1
 
         tab_donnees = []
-        for j in range(i, i + 7 * nweeks):
+        for j in range(i, i + 7 * self.nweeks):
             d = res["contributions"][j]
             tab_donnees.append((d["date"], d["intensity"]))
 
@@ -83,14 +89,13 @@ class Ghcw(base._Widget):
                 0,
                 ((today + timedelta(days=k+1)).isoformat()[:10], 0)
             )
-        return tab_donnees[:7 * nweeks]
+        return tab_donnees[:7 * self.nweeks]
 
     def draw(self):
         if self._tab_donnees is None:
-            # draw a placeholder until data loads
+            # avant réception des données
             self.drawer.clear(self.background or self.bar.background)
             self.length = 0
-            # self.draw_text("…", self.drawer)
             self.draw_at_default_position()
             return
 
