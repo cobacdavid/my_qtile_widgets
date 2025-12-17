@@ -4,7 +4,7 @@
 Description: A Github contribution widget for Qtile
 Author: David COBAC
 Date Created: December 6, 2025
-Date Modified: December 13, 2025
+Date Modified: December 17, 2025
 Version: 1.1
 Python Version: 3.13
 Dependencies: aiohttp, libqtile
@@ -103,11 +103,14 @@ class Ghcw(base._Widget):
         if not self.token:
             logger.warning("You must provide a valid Github Token.")
             exit
-        # async task to API
-        self._tab_donnees = None
-        asyncio.create_task(self.async_init())
         self.add_callbacks({"Button1": self.to_user_webpage,
                             "Button3": self.send_themes})
+
+    def _configure(self, qtile, bar):
+        base._Widget._configure(self, qtile, bar)
+                # async task to API
+        self._tab_donnees = None
+        asyncio.create_task(self.async_init())
 
     def to_user_webpage(self):
         url = f"https://github.com/{self.idgithub}"
@@ -120,8 +123,7 @@ class Ghcw(base._Widget):
         """Partie asynchrone de l'init."""
         data = await self.fetch_contribs()
         self._tab_donnees = data
-        # draw widget and update bar
-        self.draw()
+        # let qtile decides
         self.bar.draw()
 
     async def fetch_contribs(self):
