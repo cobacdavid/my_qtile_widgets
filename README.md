@@ -31,6 +31,7 @@ my_bar_widgets = [
 ]
 ...
 ```
+
 ### Options
 
 Unlike original Github diagram, **the week begins on Monday**.
@@ -51,3 +52,47 @@ If you use a predefined theme, `colors` option will be ignored but `empty_cell_c
 
  - Left click on the widget opens the username github page.
  - Right click sends a notification on existing themes names.
+
+## Matrix
+
+The widget offers a 10x10 square pixels matrix. According to a value in [0-100] interval, the widgets lights up pixels.
+
+<img src="https://github.com/cobacdavid/my_qtile_widgets/blob/main/matrix.png?raw=true" width=10% />
+
+Pixels are chosen randomly. For example, with a battery charge: 100% lights up every pixel, while 50% lights up half of the pixels.
+
+The value comes from a shell command or a Python function.
+
+### Install
+
+The `Matrix` widget is in the `matrix.py` standalone file.
+
+Install it using a `git clone` command or just in copying the file in a `~/.config/qtile/widgets/` directory (and create in it a `__init__.py` empty file).
+
+
+### Usage
+For example, in your `config.py` :
+
+```python
+frow widgets import matrix  # if you put matrix.py in a `widgets` dir.
+...
+my_bar_widgets = [
+    ...
+    matrix.Matrix(inmargin=0, cmd=r"cat /sys/class/power_supply/BAT0/capacity"),
+    ...
+]
+...
+```
+
+### Options
+
+ - `ìnmargin` (int): margin all around the square. Default is `2` (pixels) ;
+ - `update_interval` (int): delay in seconds between two refreshs of the widget. Default is `300` (seconds=5 minutes) ;
+ - `cmd` (str): shell command to execute to get the value. The command has to return a number between 0 and 100. Default is `r"echo $(( RANDOM % 101 ))"`. Note: The string resulting will be stripped if it contains unwanted blank spaces. So don't worry about extra spaces...
+ - `execshell` (str): path to shell to be used. Default is `"/usr/bin/bash"`.
+ - `pyfunc` (function): a Python function returning a number between 0 and 100. Default is `None`.
+
+If `pyfunc` is not `None`, the shell command will be ignored.
+
+### Interaction
+No interaction.
