@@ -1,5 +1,11 @@
 # My Qtile Widgets
 
+## Widgets
+
+ - [Github contrib. widget](#github-contribution-widget)
+ - [Matrix](#matrix)
+ - [Tixy](#tixy)
+
 ## License
 
 [GNU/GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html)
@@ -93,6 +99,47 @@ my_bar_widgets = [
  - `pyfunc` (function): a Python function returning a number between 0 and 100. Default is `None`.
 
 If `pyfunc` is not `None`, the shell command will be ignored.
+
+### Interaction
+No interaction.
+
+## Tixy
+
+The widget offers a tixy experience (https://tixy.land/).
+
+<img src="https://github.com/cobacdavid/my_qtile_widgets/blob/main/tixy.gif?raw=true" width=10% />
+
+
+### Install
+
+The `Matrix` widget is in the `tixy.py` standalone file.
+
+Install it using a `git clone` command or just in copying the file in a `~/.config/qtile/widgets/` directory (and create in it a `__init__.py` empty file).
+
+
+### Usage
+For example, in your `config.py` :
+
+```python
+frow widgets import tixy  # if you put tixy.py in a `widgets` dir.
+...
+my_bar_widgets = [
+    ...
+    tixy.Tixy(),
+    ...
+]
+...
+```
+
+### Options
+
+ - `colors` (list[str, str]): colors array, first element for positive color, second  d for negative. Default is `["ffffff", "ff0000"]`.
+ - `force_step` (float): Forces fake time `t` step. Can be useful using great `update_interval` to get a slow animation. Default is `None`.
+ - `ìnmargin` (int): margin all around the widget. Default is `2` (pixels) ;
+ - `pyfunc` (function): a Python function returning a number between -1 and 1. Default is `"lambda t,i,x,y: math.sin(y/8+t)"`.
+ - `update_interval` (int): delay in seconds between two refreshs of the widget. This controls the  `t` parameter.  Default is `1` (refresh every second).
+ - `w` and `h` control number of cells, respectively in width and height. Default values are respectively `20` and `10`. 
+
 
 ### Interaction
 No interaction.
