@@ -113,7 +113,7 @@ The widget offers a tixy experience (https://tixy.land/).
 
 ### Install
 
-The `Matrix` widget is in the `tixy.py` standalone file.
+The `Tixy` widget is in the `tixy.py` standalone file.
 
 Install it using a `git clone` command or just in copying the file in a `~/.config/qtile/widgets/` directory (and create in it a `__init__.py` empty file).
 
