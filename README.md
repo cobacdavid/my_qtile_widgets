@@ -108,7 +108,7 @@ No interaction.
 
 The widget offers a tixy experience (https://tixy.land/) associated with net UP or DOWN. Animation continues if UP else animation stops.
 
-<img src="https://github.com/cobacdavid/my_qtile_widgets/blob/main/tixy.gif?raw=true" width=30% />
+<img src="https://github.com/cobacdavid/my_qtile_widgets/blob/main/tixynet.gif?raw=true" width=30% />
 
 
 ### Install
@@ -126,7 +126,7 @@ frow widgets import tixynet  # if you put tixynet.py in a `widgets` dir.
 ...
 my_bar_widgets = [
     ...
-    tixynet.Tixynet(iface="en3sp0"),
+    tixynet.Tixynet(iface="enp3s0"),
     ...
 ]
 ...
