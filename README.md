@@ -5,7 +5,7 @@
  - [Github contrib. widget](#github-contribution-widget)
  - [Matrix](#matrix)
  - [Tixynet](#tixynet)
- - [Clock alt](#clock-alt)
+ - [Clock](#clock)
  - [Volume](#volume)
 
 ## License
@@ -15,10 +15,10 @@
 ## Github Contribution Widget
 
 Example image with a full year:
-<img src="https://github.com/cobacdavid/my_qtile_widgets/blob/main/ghcw.png?raw=true" width=50% />
+<img src="https://github.com/cobacdavid/my_qtile_widgets/blob/main/img/ghcw.png?raw=true" width=50% />
 
 Example image with 3 years (and a smaller `bar`):
-<img src="https://github.com/cobacdavid/my_qtile_widgets/blob/main/ghcw2.png?raw=true" width=50% />
+<img src="https://github.com/cobacdavid/my_qtile_widgets/blob/main/img/ghcw2.png?raw=true" width=50% />
 
 
 ### Install
@@ -70,7 +70,7 @@ If you use a predefined theme, `colors` option will be ignored but `empty_cell_c
 
 The widget offers a 10x10 square pixels matrix. According to a value in [0-100] interval, the widgets lights up pixels.
 
-<img src="https://github.com/cobacdavid/my_qtile_widgets/blob/main/matrix.png?raw=true" width=10% />
+<img src="https://github.com/cobacdavid/my_qtile_widgets/blob/main/img/matrix.png?raw=true" width=10% />
 
 Pixels are chosen randomly. For example, with a battery charge: 100% lights up every pixel, while 50% lights up half of the pixels.
 
@@ -114,7 +114,7 @@ No interaction.
 
 The widget offers a tixy experience (https://tixy.land/) associated with net UP or DOWN. Animation continues if UP else animation stops.
 
-<img src="https://github.com/cobacdavid/my_qtile_widgets/blob/main/tixynet.gif?raw=true" width=30% />
+<img src="https://github.com/cobacdavid/my_qtile_widgets/blob/main/img/tixynet.gif?raw=true" width=30% />
 
 
 ### Install
@@ -153,16 +153,16 @@ my_bar_widgets = [
 ### Interaction
 No interaction.
 
-## Clock alt
+## Clock
 
 An alternative clock with 4 available layouts. 
 
-<img src="https://github.com/cobacdavid/my_qtile_widgets/blob/main/clock_alt0.png?raw=true" width=10% /> <img src="https://github.com/cobacdavid/my_qtile_widgets/blob/main/clock_alt1.png?raw=true" width=10% /> <img src="https://github.com/cobacdavid/my_qtile_widgets/blob/main/clock_alt2.png?raw=true" width=10% /> <img src="https://github.com/cobacdavid/my_qtile_widgets/blob/main/clock_alt3.png?raw=true" width=10% />
+<img src="https://github.com/cobacdavid/my_qtile_widgets/blob/main/img/clock0.png?raw=true" width=10% /> <img src="https://github.com/cobacdavid/my_qtile_widgets/blob/main/img/clock1.png?raw=true" width=10% /> <img src="https://github.com/cobacdavid/my_qtile_widgets/blob/main/img/clock2.png?raw=true" width=10% /> <img src="https://github.com/cobacdavid/my_qtile_widgets/blob/main/img/clock3.png?raw=true" width=10% />
 
 
 ### Install
 
-The `Clock alt` widget is in the `clock_alt.py` standalone file.
+The `Clock` widget is in the `clock.py` standalone file.
 
 Install it using a `git clone` command or just in copying the file in a `~/.config/qtile/widgets/` directory (and create in it a `__init__.py` empty file).
 
@@ -171,11 +171,11 @@ Install it using a `git clone` command or just in copying the file in a `~/.conf
 For example, in your `config.py` :
 
 ```python
-frow widgets import clock_alt  # if you put clock_alt.py in a `widgets` dir.
+frow widgets import clock  # if you put clock.py in a `widgets` dir.
 ...
 my_bar_widgets = [
     ...
-    clock_alt.Clock_alt(),
+    clock.Clock(),
     ...
 ]
 ...
@@ -199,7 +199,7 @@ Left and right click change `state`.
 
 An alternative volume with 2 available layouts. 
 
-<img src="https://github.com/cobacdavid/my_qtile_widgets/blob/main/volume1.png?raw=true" width=10% /> <img src="https://github.com/cobacdavid/my_qtile_widgets/blob/main/volume2.png?raw=true" width=10% /> <img src="https://github.com/cobacdavid/my_qtile_widgets/blob/main/volume3.png?raw=true" width=10% /> <img src="https://github.com/cobacdavid/my_qtile_widgets/blob/main/volume4.png?raw=true" width=10px />
+<img src="https://github.com/cobacdavid/my_qtile_widgets/blob/main/img/volume1.png?raw=true" width=10% /> <img src="https://github.com/cobacdavid/my_qtile_widgets/blob/main/img/volume2.png?raw=true" width=10% /> <img src="https://github.com/cobacdavid/my_qtile_widgets/blob/main/img/volume3.png?raw=true" width=10% /> <img src="https://github.com/cobacdavid/my_qtile_widgets/blob/main/img/volume4.png?raw=true" width=10px />
 
 
 ### Install

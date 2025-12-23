@@ -7,9 +7,9 @@ Date Created: December 6, 2025
 Date Modified: December 22, 2025
 Version: 1.2
 Python Version: 3.13
-Dependencies: aiohttp, libqtile
+Dependencies: aiohttp
 License: GNU GPL Version 3
-Repo: https://github.com/cobacdavid/my_qtile_widgets
+Repo: https://github.com/cobacdavid/qtile_alt_widgets
 """
 
 import asyncio

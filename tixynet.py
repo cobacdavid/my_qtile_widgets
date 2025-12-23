@@ -7,9 +7,9 @@ Date Created: December 19, 2025
 Date Modified: December 22, 2025
 Version: 1.0
 Python Version: 3.13
-Dependencies: 
+Dependencies:
 License: GNU GPL Version 3
-Repo: https://github.com/cobacdavid/my_qtile_widgets
+Repo: https://github.com/cobacdavid/qtile_alt_widgets
 """
 
 import math as _math

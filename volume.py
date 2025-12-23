@@ -9,7 +9,7 @@ Version: 1.0
 Python Version: 3.13
 Dependencies:
 License: GNU GPL Version 3
-Repo: https://github.com/cobacdavid/my_qtile_widgets
+Repo: https://github.com/cobacdavid/qtile_alt_widgets
 """
 
 import subprocess
