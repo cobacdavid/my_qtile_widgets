@@ -199,7 +199,7 @@ Left and right click change `state`.
 
 An alternative volume with 2 available layouts. 
 
-<img src="https://github.com/cobacdavid/my_qtile_widgets/blob/main/volume1.png?raw=true" width=10% /> <img src="https://github.com/cobacdavid/my_qtile_widgets/blob/main/volume2.png?raw=true" width=10% /> <img src="https://github.com/cobacdavid/my_qtile_widgets/blob/main/volume3.png?raw=true" width=10% /> <img src="https://github.com/cobacdavid/my_qtile_widgets/blob/main/volume4.png?raw=true" width=10% />
+<img src="https://github.com/cobacdavid/my_qtile_widgets/blob/main/volume1.png?raw=true" width=10% /> <img src="https://github.com/cobacdavid/my_qtile_widgets/blob/main/volume2.png?raw=true" width=10% /> <img src="https://github.com/cobacdavid/my_qtile_widgets/blob/main/volume3.png?raw=true" width=10% /> <img src="https://github.com/cobacdavid/my_qtile_widgets/blob/main/volume4.png?raw=true" width=10px />
 
 
 ### Install
