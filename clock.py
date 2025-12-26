@@ -48,10 +48,12 @@ class Clock(base._Widget):
     def inc_state(self):
         self.state = (self.state + 1) % 4
         self._update()
+        self.bar.draw()
 
     def dec_state(self):
         self.state = (self.state - 1) % 4
         self._update()
+        self.bar.draw()
 
     def _tick(self):
         self._update()
@@ -67,7 +69,7 @@ class Clock(base._Widget):
         else:
             self.txt_ht = datetime.now().strftime(self.fmt2)
             self.txt_bs = datetime.now().strftime(self.fmt1)
-        self.bar.draw()
+        self.draw()
 
     def draw(self):
         self.drawer.clear(self.background or self.bar.background)

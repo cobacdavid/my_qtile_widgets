@@ -132,6 +132,7 @@ query($login: String!, $from: DateTime!, $to: DateTime!) {
     def switch_theme(self):
         self.theme = self.ghcw_themes[self.ghcw_themes_i]
         self.ghcw_themes_i = (self.ghcw_themes_i + 1) % len(self.ghcw_themes)
+        send_notification("ghcw", f"Thème {self.theme}")
         self.draw()
 
     async def async_init(self):
@@ -139,6 +140,7 @@ query($login: String!, $from: DateTime!, $to: DateTime!) {
         data = await self.fetch_contribs()
         self._tab_donnees = data
         # let qtile decides
+        self.draw()
         self.bar.draw()
 
     async def fetch_contribs(self):

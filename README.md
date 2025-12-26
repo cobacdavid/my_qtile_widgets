@@ -7,6 +7,9 @@
 - [Tixynet](#tixynet)
 - [Clock](#clock)
 - [Volume](#volume)
+- [Pct](#pct)
+
+These widgets access to some default variables set in `widget_defaults` variable, as `font`, `fontsize`, `padding` and `foreground`. Please, pay attention to set these default variables if you wish to use widgets defined in this page.
 
 ## License
 
@@ -241,3 +244,93 @@ my_bar_widgets = [
 ### Interaction
 
 Left click toggle mute mode, volume bar is no more filled but outlined. Using wheel increases or decreases volume.
+
+
+## Pct
+
+An alternative versatile percentage widget.
+
+<img src="https://github.com/cobacdavid/my_qtile_widgets/blob/main/img/pct.png?raw=true" width=30% /> 
+
+
+### Install
+
+The `Pct` widget is available with  `pct.py` and `flower_pbar.py` files.
+
+Install them using a `git clone` command or just in copying the files in a `~/.config/qtile/widgets/` directory (and create in it a `__init__.py` empty file).
+
+
+### Usage
+For example, in your `config.py` :
+
+```python
+frow widgets import pct  # if you put pct.py in a `widgets` dir.
+...
+my_bar_widgets = [
+    ...
+    pct.Pct(),
+    ...
+]
+...
+```
+
+Below a complete example of a `volume` control widget using `Pct`:
+
+```python
+def volume_exec(cmd):
+    import subprocess
+    subprocess.run(cmd, text=True, shell=True, executable="/usr/bin/bash")
+
+
+def mute(obj):
+    volume_exec("amixer set Master mute")
+    obj.draw_method = "stroke"
+
+
+def unmute(obj):
+    volume_exec("amixer set Master unmute")
+    obj.draw_method = "fill"
+
+
+def inc_v(obj):
+    volume_exec("amixer set Master 5%+")
+
+
+def dec_v(obj):
+    volume_exec("amixer set Master 5%-")
+
+
+...
+pct.Pct(cmd="amixer get Master "
+        "| awk -F'[][]' 'END{print $2}' | tr -d '%'",
+        colors=[flower_active, flower_inactive],
+        text="vol",
+        fpbar_sct=20,
+        update_interval=.2,
+        button1=mute,
+        button3=unmute,
+        button4=inc_v,
+        button5=dec_v)
+...
+```
+
+### Options
+ - `button[1-7]` (str): optional python callback functions for interactive use. Default is `None`.
+ - `center_text` (bool): it displays the progressbar and the text centered. Default is `True`.
+ - `cmd` (str): command to execute to get the value to represent. Default is `"awk '/MemTotal/ {t=$2} /MemAvailable/ {a=$2} END {printf \"%.0f\\n\", ((t-a)/t)*100}' /proc/meminfo"`, it returns RAM memory currently used.
+ - `colors` (list[str, str]): colors array, first element for positive color, second  d for negative. Default is `["ffffff", "ff0000"]`.
+ - `execshell` (str): shell to use to execute `amixer` commands. Default is `"/usr/bin/bash"`.
+ - `fpbar_max` (float): max of values. Default is `100`.
+ - `fpbar_min` (float): min of values. Default is `0`.
+ - `fpbar_inradius` (float): if given respect inner radius in pixels. Default is `None`, in this case, the value is 10% of bar height.
+ - `fpbar_sct` (int): number of sectors to use. Default is `10`, min is `2`.
+ - `hide_text`(bool): do not show the text. Default is `False`.
+ - `rev` (bool): clockwise (`False`) or not (`True`). Default is `True`.
+ - `text` (str): the text to display. Default is `"mem"`.
+ - `text_size` (int): Fontsize to use. Default is `10`.
+ - `update_interval` (int): delay in seconds between two refreshs of the widget. Default is `1` (refresh every second).
+ - `ymargin` (int): y margin in pixels. Default is `2`.
+
+### Interaction
+
+Left click (`button1`) sends a notification of current value. You can bind options `button[1-7]` to python functions.

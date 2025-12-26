@@ -168,15 +168,15 @@ class Volume(base._Widget):
                              shell=True,
                              executable=self.execshell)
         self.mute = not self.mute
-        self.bar.draw()
+        self.draw()
 
     def inc_volume(self):
         self._change_volume(self.step)
-        self.bar.draw()
+        self.draw()
 
     def dec_volume(self):
         self._change_volume(-self.step)
-        self.bar.draw()
+        self.draw()
 
     def _change_volume(self, inc):
         cvol = self.get_volume()

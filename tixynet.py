@@ -100,7 +100,7 @@ class Tixynet(base._Widget):
                 self.frame += self.force_step
         else:
             self.frame += 0
-        self.bar.draw()
+        self.draw()
 
     def draw(self):
         self.drawer.clear(self.background or self.bar.background)

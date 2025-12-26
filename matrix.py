@@ -52,7 +52,6 @@ class Matrix(base._Widget):
     defaults = [("inmargin", 2, "inner margin"),
                 ("update_interval", 300, "300s"),
                 ("cmd", r"echo $(( RANDOM % 101 ))", "shell command to execute"),
-                ("color", "000000", ""),
                 ("execshell", "/usr/bin/bash", "shell to use"),
                 ("pyfunc", None, "python function returning a number [0-100]")]
 
@@ -86,7 +85,7 @@ class Matrix(base._Widget):
             self.value = res.stdout.strip()
         else:
             self.value = self.pyfunc()
-        self.bar.draw()
+        self.draw()
 
     def draw(self):
         self.drawer.clear(self.background or self.bar.background)
@@ -94,6 +93,6 @@ class Matrix(base._Widget):
             ctx = self.drawer.ctx
             ctx.translate(self.inmargin + self.padding, self.inmargin)
             for i in range(int(self.value)):
-                self.flatsqarray[i].couleur = str2cairorgb(self.color)
+                self.flatsqarray[i].couleur = str2cairorgb(self.foreground)
                 self.flatsqarray[i].draw(ctx)
         self.draw_at_default_position()
