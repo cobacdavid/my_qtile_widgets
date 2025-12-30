@@ -57,7 +57,7 @@ class Clock(base._Widget):
 
     def _tick(self):
         self._update()
-        self.timeout_add(1, self._tick)
+        self._timer = self.timeout_add(1, self._tick)
 
     def _update(self):
         self.rev = self.state & 1
@@ -102,3 +102,9 @@ class Clock(base._Widget):
         #
         self.length = round(occup_x)
         self.draw_at_default_position()
+
+    def finalize(self):
+        if self._timer:
+            self._timer.cancel()
+            self._timer = None
+        base._Widget.finalize(self)

@@ -1,6 +1,8 @@
 import math as _math
 
-import cairo as _cairo
+import colormaps as _cmaps
+
+# import cairo as _cairo
 
 
 def str2cairorgb(s):
@@ -67,7 +69,8 @@ class Flower_pbar:
                  n_sectors, sector_angle,
                  start_angle, angle_incr, angle_offset,
                  in_radius, out_radius, inter_radius,
-                 hex_foreground_color, hex_background_color):
+                 hex_foreground_color, hex_background_color,
+                 colormap=None, colormap_rev=False):
         """
         sector_angle : angle du secteur visible (typiquement 90% de angle_incr)
         angle_incr : angle total du secteur, espacements compris
@@ -85,18 +88,34 @@ class Flower_pbar:
         self.sector_angle = sector_angle
         self.pat_foreground_color = str2cairorgb(hex_foreground_color)
         self.pat_background_color = str2cairorgb(hex_background_color)
+        self.colormap = colormap
+        self.colormap_rev = colormap_rev
         #
         self.value_incr = (self.max_value - self.min_value) / self.n_sectors
+        if self.colormap:
+            self.cmp2col()
+
+    def cmp2col(self):
+        col = getattr(_cmaps, self.colormap).discrete(self.n_sectors)
+
+        self.colors = [tuple(map(float, col(i)))[:-1]
+                       for i in range(self.n_sectors)]
+        if self.colormap_rev:
+            self.colors.reverse()
 
     def draw(self, ctx, draw_method):
         for i in range(self.n_sectors):
             angle = _math.radians(self.start_angle + i * self.angle_incr)
             if self.value >= (i + 1)*self.value_incr:
+                # pétale active
                 ctx.save()
                 ctx.rotate(angle)
                 Petal_pbar(self.in_radius, self.out_radius, self.inter_radius,
                            self.sector_angle, self.angle_offset).draw(ctx)
-                ctx.set_source_rgb(*self.pat_foreground_color)
+                if self.colormap:
+                    ctx.set_source_rgb(*self.colors[i])
+                else:
+                    ctx.set_source_rgb(*self.pat_foreground_color)
                 getattr(ctx, draw_method)()
                 ctx.restore()
             else:
@@ -117,7 +136,10 @@ class Flower_pbar:
                     #
                     Petal_pbar(self.in_radius, self.out_radius, self.inter_radius,
                                new_sector_angle, new_angle_offset).draw(ctx)
-                    ctx.set_source_rgb(*self.pat_foreground_color)
+                    if self.colormap:
+                        ctx.set_source_rgb(*self.colors[i])
+                    else:
+                        ctx.set_source_rgb(*self.pat_foreground_color)
                     getattr(ctx, draw_method)()
                     ctx.restore()
 
@@ -127,8 +149,38 @@ if __name__ == "__main__":
 
     on = "ff0000"
     off = "ffff00"
-
     dim = 800
+    #
+    img = cairo.ImageSurface(cairo.FORMAT_ARGB32, dim, dim)
+    ctx = cairo.Context(img)
+    ctx.set_source_rgb(0, 0, 0)
+    ctx.paint()
+    ctx.set_source_rgb(1, 1, 1)
+    ctx.save()
+    ctx.translate(dim/2, dim/2)
+    f = Petal_pbar(150, 200, 10, 40, 5)
+    f.draw(ctx)
+    ctx.fill()
+    ctx.restore()
+    img.write_to_png("test_petal_fpbar.png")
+    #
+    img = cairo.ImageSurface(cairo.FORMAT_ARGB32, dim, dim)
+    ctx = cairo.Context(img)
+    ctx.set_source_rgb(0.3, 0.3, 0.3)
+    ctx.paint()
+    ctx.set_source_rgb(1, 1, 1)
+    ctx.save()
+    ctx.translate(dim/2, dim/2)
+    f = Flower_pbar(75, 100, 0,
+                    10, 20,
+                    18, -240 / 10, 3,
+                    50, 300, 10,
+                    on, off, "ice", True)
+    f.draw(ctx, "fill")
+    ctx.fill()
+    ctx.restore()
+    img.write_to_png("test_flower_fpbar.png")
+    #
     img = cairo.ImageSurface(cairo.FORMAT_ARGB32, dim, dim)
     ctx = cairo.Context(img)
     ctx.set_source_rgb(0, 0, 0)
@@ -138,22 +190,6 @@ if __name__ == "__main__":
     ctx.translate(dim/2, dim/2)
     f = Petal_pbar(150, 200, 10, 190, 5)
     f.draw(ctx)
+    ctx.stroke()
     ctx.restore()
     img.write_to_png("test_petal_fpbar_issue.png")
-    #
-    img = cairo.ImageSurface(cairo.FORMAT_ARGB32, dim, dim)
-    ctx = cairo.Context(img)
-    ctx.set_source_rgb(0, 0, 0)
-    ctx.paint()
-    ctx.set_source_rgb(1, 1, 1)
-    ctx.save()
-    ctx.translate(dim/2, dim/2)
-    f = Flower_pbar(75, 100, 0,
-                    10, 20,
-                    18, -240 / 10, 3,
-                    50, 300, 10,
-                    on, off)
-    f.draw(ctx, "stroke")
-    ctx.fill()
-    ctx.restore()
-    img.write_to_png("test_flower_fpbar.png")

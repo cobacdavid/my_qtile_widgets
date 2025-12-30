@@ -32,6 +32,8 @@ class Pct(base._Widget):
         ("center_text", True, ""),
         ("cmd", "awk '/MemTotal/ {t=$2} /MemAvailable/ {a=$2} END"
          " {printf \"%.0f\\n\", ((t-a)/t)*100}' /proc/meminfo", ""),
+        ("colormap", None, ""),
+        ("colormap_rev", False, ""),
         ("colors", ["ffffff", "ff0000"], ""),
         ("execshell", "/usr/bin/bash", ""),
         ("fpbar_max", 100, ""),
@@ -127,7 +129,8 @@ class Pct(base._Widget):
                     self.fpbar_sct, self._sector_size,
                     self._sector_start, -self._angle_incr, 1,
                     self._in_r, self._out_r, self._inter_r,
-                    self.colors[0], self.colors[1]).draw(ctx, self.draw_method)
+                    self.colors[0], self.colors[1],
+                    self.colormap, self.colormap_rev).draw(ctx, self.draw_method)
         ctx.restore()
         # text
         if self.text and not self.hide_text:

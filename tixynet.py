@@ -90,7 +90,7 @@ class Tixynet(base._Widget):
 
     def _tick(self):
         self._update()
-        self.timeout_add(self.update_interval, self._tick)
+        self._timer = self.timeout_add(self.update_interval, self._tick)
 
     def _update(self):
         if self.etat:
@@ -129,3 +129,9 @@ class Tixynet(base._Widget):
             s.close()
 
         self.timeout_add(self.iface_interval, self.update_status)
+
+    def finalize(self):
+        if self._timer:
+            self._timer.cancel()
+            self._timer = None
+        base._Widget.finalize(self)
