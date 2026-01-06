@@ -36,10 +36,10 @@ class Pct(base._Widget):
         ("colormap_rev", False, ""),
         ("colors", ["ffffff", "ff0000"], ""),
         ("execshell", "/usr/bin/bash", ""),
-        ("fpbar_max", 100, ""),
-        ("fpbar_min", 0, ""),
-        ("fpbar_inradius", None, ""),
-        ("fpbar_sct", 10, ""),
+        ("max", 100, ""),
+        ("min", 0, ""),
+        ("inradius", None, ""),
+        ("nsectors", 10, ""),
         ("hide_text", False, ""),
         ("rev", True, ""),
         ("text", "mem", ""),
@@ -54,7 +54,7 @@ class Pct(base._Widget):
         self.niveau = 0
         self.draw_method = "fill"
         self._sgn = -1 if self.rev else 1
-        self.fpbar_sct = max(2, self.fpbar_sct)
+        self.nsectors = max(2, self.nsectors)
         #
         self.add_callbacks({f"Button{n}": lambda n=n: self._button_handle(n)
                             for n in range(1, 8)})
@@ -74,12 +74,12 @@ class Pct(base._Widget):
         else:
             self._out_r = .5 * self.bar.height - self.ymargin
         # options for flower_pbar
-        if self.fpbar_inradius:
-            self._in_r = self.fpbar_inradius
+        if self.inradius:
+            self._in_r = self.inradius
         else:
             self._in_r = .35 * self.bar.height
         self._inter_r = (self._out_r - self._in_r) / 2
-        self._angle_incr = 240 / self.fpbar_sct
+        self._angle_incr = 240 / self.nsectors
         self._sector_size = self._angle_incr * .95
         self._angle_incr *= self._sgn
         self._sector_start = 90 - self._sgn*60 - self._angle_incr/2
@@ -102,8 +102,10 @@ class Pct(base._Widget):
         # the larger the better
         self.length = max(self.length, new_length_1, new_length_2)
         #
+        self._timer = None
+        self._update()
         if self.update_interval != 0:
-            self.timeout_add(self.update_interval, self._tick)
+            self._timer = self.timeout_add(self.update_interval, self._tick)
 
     def send_value(self):
         send_notification("Pct widget", f"{self.text} : {self.niveau}")
@@ -127,8 +129,8 @@ class Pct(base._Widget):
         ctx.save()
         ctx.translate(self.length / 2, self._out_r + self.ymargin)
         # flower pbar
-        Flower_pbar(self.niveau, self.fpbar_max, self.fpbar_min,
-                    self.fpbar_sct, self._sector_size,
+        Flower_pbar(self.niveau, self.max, self.min,
+                    self.nsectors, self._sector_size,
                     self._sector_start, -self._angle_incr, 1,
                     self._in_r, self._out_r, self._inter_r,
                     self.colors[0], self.colors[1],

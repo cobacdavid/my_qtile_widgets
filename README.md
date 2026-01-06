@@ -350,7 +350,7 @@ pct.Pct(cmd="amixer get Master "
         "| awk -F'[][]' 'END{print $2}' | tr -d '%'",
         colors=[flower_active, flower_inactive],
         text="vol",
-        fpbar_sct=20,
+        nsectors=20,
         update_interval=.2,
         button1=mute,
         button3=unmute,
@@ -367,15 +367,15 @@ pct.Pct(cmd="amixer get Master "
  - `colormap_rev` (bool): boolean to reverse colormap. Default is `False`.
  - `colors` (list[str, str]): colors array, first element for positive color, second  d for negative. Default is `["ffffff", "ff0000"]`.
  - `execshell` (str): shell to use to execute `amixer` commands. Default is `"/usr/bin/bash"`.
- - `fpbar_max` (float): max of values. Default is `100`.
- - `fpbar_min` (float): min of values. Default is `0`.
- - `fpbar_inradius` (float): if given respect inner radius in pixels. Default is `None`, in this case, the value is 10% of bar height.
- - `fpbar_sct` (int): number of sectors to use. Default is `10`, min is `2`.
+ - `inradius` (float): if given respect inner radius in pixels. Default is `None`, in this case, the value is 10% of bar height.
  - `hide_text`(bool): do not show the text. Default is `False`.
+ - `max` (float): max of values. Default is `100`.
+ - `min` (float): min of values. Default is `0`.
+ - `nsectors` (int): number of sectors to use. Default is `10`, min is `2`.
  - `rev` (bool): clockwise (`False`) or not (`True`). Default is `True`.
  - `text` (str): the text to display. Default is `"mem"`.
  - `text_size` (int): Fontsize to use. Default is `10`.
- - `update_interval` (int): delay in seconds between two refreshs of the widget. Default is `1` (refresh every second).
+ - `update_interval` (int): delay in seconds between two refreshs of the widget. If set to `0`, no updates will occur, unless using `button[1-7]` (at least one) with a callback function. Default is `1` (refresh every second).
  - `ymargin` (int): y margin in pixels. Default is `2`.
 
 ### Interaction
