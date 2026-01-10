@@ -57,6 +57,7 @@ mywidgets = [
 - [Clock](#clock)
 - [Volume](#volume)
 - [Pct](#pct)
+- [Xeyes](#xeyes)
 
 These widgets access to some default variables set in `widget_defaults` variable, as `font`, `fontsize`, `padding` and `foreground`. Please, pay attention to set these default variables if you wish to use widgets defined in this page.
 
@@ -381,3 +382,44 @@ pct.Pct(cmd="amixer get Master "
 ### Interaction
 
 Left click (`button1`) sends a notification of current value. You can bind options `button[1-7]` to python functions.
+
+## Xeyes
+
+A [xeyes]()-like widget.
+
+<img src="https://github.com/cobacdavid/my_qtile_widgets/blob/main/img/xeyes.png?raw=true" width=10% />
+
+
+### Install
+
+The `Xeyes` widget is in the `xeyes.py` standalone file.
+
+Install it using a `git clone` command or just in copying the file in a `~/.config/qtile/widgets/` directory (and create in it a `__init__.py` empty file).
+
+
+### Usage
+For example, in your `config.py` :
+
+```python
+frow widgets import xeyes  # if you put volume.py in a `widgets` dir.
+...
+my_bar_widgets = [
+    ...
+    xeyes.Xeyes(),
+    ...
+]
+...
+```
+
+### Options
+
+ - `eye_color` (str): color of eye. Default is `"ffffff"` (white).
+ - `eye_radius` (int): eye radius. Default is `10` pixels.
+ - `gap` (int): space between eyes. Default is `3` pixels.
+ - `padding` (int): horizontal space with widget's edge. Default is `0` pixel.
+ - `pupil_radius` (str): pupil radius. Default is `3` pixels.
+ - `pupil_color` (str): color of pupil. Default is `"000000"` (black).
+ - `update_interval` (float): delay between two refreshs. Default is `0.04` (25 fps).
+
+### Interaction
+None
