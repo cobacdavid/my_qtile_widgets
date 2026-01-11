@@ -18,12 +18,14 @@ from libqtile.widget import base
 
 class Xeyes(base._Widget):
     defaults = [
-        ("eye_radius", 10),
+        ("eye_radius", 15),
+        ("iris_radius", 5),
         ("pupil_radius", 3),
         ("padding", 0),
         ("gap", 3),
         ("update_interval", 0.04),
         ("eye_color", "ffffff"),
+        ("iris_color", "aaaaff"),
         ("pupil_color", "000000"),
     ]
 
@@ -60,7 +62,7 @@ class Xeyes(base._Widget):
         finally:
             self._tick()
 
-    def _pupil(self, local_cx, local_cy):
+    def _iris(self, local_cx, local_cy):
         mx, my = self._mouse_pos
 
         eye_x = self.bar.x + self.offsetx + local_cx
@@ -70,7 +72,7 @@ class Xeyes(base._Widget):
         dy = my - eye_y
 
         dist = _math.hypot(dx, dy)
-        maxd = self.eye_radius - self.pupil_radius - 2
+        maxd = self.eye_radius - max(self.iris_radius, self.pupil_radius) - 2
 
         if dist == 0:
             return 0, 0
@@ -92,11 +94,15 @@ class Xeyes(base._Widget):
         for cx in (x1, x2):
             ctx.set_source_rgb(*self.str2rgb(self.eye_color))
             ctx.arc(cx, cy, r, 0, 2*_math.pi)
-            self.drawer.ctx.fill()
+            ctx.fill()
 
-            px, py = self._pupil(cx, cy)
+            px, py = self._iris(cx, cy)
+            ctx.set_source_rgb(*self.str2rgb(self.iris_color))
+            ctx.arc(cx + px, cy + py, self.iris_radius, 0, 2*_math.pi)
+            ctx.fill()
+            
             ctx.set_source_rgb(*self.str2rgb(self.pupil_color))
             ctx.arc(cx + px, cy + py, self.pupil_radius, 0, 2*_math.pi)
             ctx.fill()
 
-        self.drawer.draw(offsetx=self.offsetx, width=self.length)
+        self.draw_at_default_position()

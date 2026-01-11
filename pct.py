@@ -112,6 +112,8 @@ class Pct(base._Widget):
 
     def _tick(self):
         self._update()
+        if self._timer:
+            self._timer.cancel()
         self._timer = self.timeout_add(self.update_interval, self._tick)
 
     def _update(self):

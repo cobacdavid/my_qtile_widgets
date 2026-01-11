@@ -59,11 +59,10 @@ class Carre:
 class Tixynet(base._Widget):
     defaults = [
         ("iface", "eth0", ""),
-        ("iface_interval", 5, ""),
         ("inmargin", 2, ""),
         ("force_step", None, ""),
         ("pyfunc", lambda t, i, x, y: _math.sin(y/8+t), ""),
-        ("update_interval", 1, ""),
+        ("update_interval", .05, ""),
         ("colors", ["ffffff", "ff0000"], ""),
         ("w", 20, ""),
         ("h", 10, "")
@@ -84,12 +83,16 @@ class Tixynet(base._Widget):
                                lig*self.dimax + self.dimax/2)
                          for col in range(self.w)]
                         for lig in range(self.h)]
+        self._timer = None
         self.update_status()
         self._update()
-        self.timeout_add(self.update_interval, self._tick)
+        self._tick()
 
     def _tick(self):
+        self.update_status()
         self._update()
+        if self._timer:
+            self._timer.cancel()
         self._timer = self.timeout_add(self.update_interval, self._tick)
 
     def _update(self):
@@ -127,8 +130,6 @@ class Tixynet(base._Widget):
             self.etat = False
         finally:
             s.close()
-
-        self.timeout_add(self.iface_interval, self.update_status)
 
     def finalize(self):
         if self._timer:
